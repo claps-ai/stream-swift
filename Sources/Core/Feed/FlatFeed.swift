@@ -1,11 +1,3 @@
-//
-//  FlatFeed.swift
-//  GetStream-iOS
-//
-//  Created by Alexey Bukhtin on 20/12/2018.
-//  Copyright © 2018 Stream.io Inc. All rights reserved.
-//
-
 import Foundation
 
 /// `FlatFeed` are the only feeds that can be followed, and therefore are a good type to setup for adding activities.
@@ -55,8 +47,8 @@ public final class FlatFeed: Feed {
                                          includeReactions reactionsOptions: FeedReactionsOptions = [],
                                          completion: @escaping ActivitiesCompletion<T>) -> Cancellable {
         let endpoint = FeedEndpoint.get(feedId, enrich, pagination, ranking ?? "", .none, reactionsOptions)
-        return Client.shared.request(endpoint: endpoint) { [weak self] result in
-            if let self = self {
+        return Client.shared.request(endpoint: endpoint) { result in
+            if self != nil {
                 result.parse(self.callbackQueue, completion)
             }
         }
@@ -64,7 +56,6 @@ public final class FlatFeed: Feed {
 }
 
 // MARK: - Client Flat Feed
-
 extension Client {
     /// Get a flat feed with a given feed group `feedSlug` and `userId`.
     public func flatFeed(feedSlug: String, userId: String) -> FlatFeed {
